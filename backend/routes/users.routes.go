@@ -17,6 +17,7 @@ func GetUsersHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetUserHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
 	var user models.User
 	params := mux.Vars(r)
 
