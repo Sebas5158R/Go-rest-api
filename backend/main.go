@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"github.com/rs/cors"
 	"github.com/sebas5158r/prueba-rest-api-gorm/db"
 	"github.com/sebas5158r/prueba-rest-api-gorm/models"
 	"github.com/sebas5158r/prueba-rest-api-gorm/routes"
@@ -11,22 +12,37 @@ import (
 
 func main() {
 
+	// Conexión a la base de datos
 	db.DBConnection()
 
+	// Migración de las tablas
 	db.DB.AutoMigrate(models.Task{})
 	db.DB.AutoMigrate(models.User{})
 
+	// Crear un nuevo router mux
 	router := mux.NewRouter()
 
-	router.HandleFunc("/", routes.HomeHandler)
-	router.HandleFunc("/users", routes.GetUsersHandler).Methods("GET")
-	router.HandleFunc("/user/{id}", routes.GetUserHandler).Methods("GET")
-	router.HandleFunc("/users", routes.PostUserHandler).Methods("POST")
-	router.HandleFunc("/user/{id}", routes.DeleteUserHandler).Methods("DELETE")
-	router.HandleFunc("/tasks", routes.GetTasksHandler).Methods("GET")
-	router.HandleFunc("/task/{id}", routes.GetTaskHandler).Methods("GET")
-	router.HandleFunc("/tasks", routes.PostTaskHandler).Methods("POST")
-	router.HandleFunc("/task/{id}", routes.DeleteTaskHandler).Methods("DELETE")
+	// Configuración CORS
+	c := cors.New(cors.Options{
+		AllowedOrigins: []string{"http://localhost:5173"},        // Origen permitido (El frontend)
+		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE"}, // Métodos permitidos
+		AllowedHeaders: []string{"Content-Type", "Accept"},       // Encabezados permitidos
+	})
 
-	http.ListenAndServe(":8181", router)
+	// Definir las rutas
+	router.HandleFunc("/", routes.HomeHandler)
+	router.HandleFunc("/api/users", routes.GetUsersHandler).Methods("GET")
+	router.HandleFunc("/api/user/{id}", routes.GetUserHandler).Methods("GET")
+	router.HandleFunc("/api/users", routes.PostUserHandler).Methods("POST")
+	router.HandleFunc("/api/user/{id}", routes.DeleteUserHandler).Methods("DELETE")
+	router.HandleFunc("/api/tasks", routes.GetTasksHandler).Methods("GET")
+	router.HandleFunc("/api/task/{id}", routes.GetTaskHandler).Methods("GET")
+	router.HandleFunc("/api/tasks", routes.PostTaskHandler).Methods("POST")
+	router.HandleFunc("/api/task/{id}", routes.DeleteTaskHandler).Methods("DELETE")
+
+	// Aplicar CORS al router
+	handlerWithCors := c.Handler(router)
+
+	// Iniciar el servidor
+	http.ListenAndServe(":8181", handlerWithCors)
 }
