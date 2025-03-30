@@ -1,5 +1,5 @@
 import { taskData } from "@/lib/types/types" // Importa el tipo de datos de la tarea
-import { GetData } from "../lib/hooks/GetData" // Hook para obtener datos de la API
+import { GetData } from "../lib/hooks/getData" // Hook para obtener datos de la API
 import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 
