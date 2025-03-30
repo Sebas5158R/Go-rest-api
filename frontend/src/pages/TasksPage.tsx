@@ -38,7 +38,7 @@ export function TasksPage() {
                     <tr>
                         <th>ID</th>
                         <th>Titulo</th>
-                        <th>Descripcion</th>
+                        <th>Descripción</th>
                         <th>Estado</th>
                         <th>Fecha de creación</th>
                     </tr>
