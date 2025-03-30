@@ -24,7 +24,7 @@ export function GetData(url: string) {
                     setData(info);
                 } else throw new Error("No se puede acceder a la URL: " + url);
             } catch (e) {
-                setError(e as string);
+                setError((e as Error).message);
             } finally {
                 setLoading(false);
             }
