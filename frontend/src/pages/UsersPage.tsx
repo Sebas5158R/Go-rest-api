@@ -4,11 +4,13 @@ import { AddUserModal } from "@components/user/AddUserModal"
 import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import { ArrowLeft } from "@/assets/svgs/arrowLeft"
+import { Pagination } from "@/components/TablePagination"
 
 export function UsersPage() {
 
     // State para almacenar los usuarios
     const [users, setUsers] = useState([])
+    const [paginatedUsers, setPaginatedUsers] = useState<userData[]>([]);
 
     // Función para obtener los usuarios desde la API
     // Se ejecuta una vez al cargar el componente
@@ -48,26 +50,36 @@ export function UsersPage() {
                                 <th scope="col" className="px-6 py-3">Nombre</th>
                                 <th scope="col" className="px-6 py-3">Apellido</th>
                                 <th scope="col" className="px-6 py-3">Email</th>
+                                <th scope="col" className="px-6 py-3">Tareas</th>
                                 <th scope="col" className="px-6 py-3">Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {users.map((user: userData) => (
+                            {paginatedUsers.map((user: userData) => (
                                 <tr key={user.ID} className="odd:bg-white even:bg-gray-50 border-b border-gray-200 hover:bg-gray-200">
                                     <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">{user.ID}</th>
                                     <td className="px-6 py-4">{user.first_name}</td>
                                     <td className="px-6 py-4">{user.last_name}</td>
                                     <td className="px-6 py-4">{user.email}</td>
                                     <td className="px-6 py-4">
+                                        {user.tasks}
                                         <Link to={`/api/user/${user.ID}`} className="font-medium text-blue-600 hover:underline">Ver tareas </Link>
-                                        - 
-                                        <Link to={`/api/user/${user.ID}`} className="font-medium text-blue-600 hover:underline"> Editar</Link>
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        <Link to={`/api/user/${user.ID}`} className="text-green-600 hover:text-green-900 font-bold"> Editar</Link>
+                                        <button className="text-red-600 hover:text-red-900 ml-2 font-bold">Eliminar</button>
                                     </td>
                                 </tr>
                             ))}
                         </tbody>
                     </table>
                 </div>
+                {/* <TablePagination /> */}
+                <Pagination
+                    data={users}
+                    itemsPerPage={6}
+                    onPageChange={(currentData) => setPaginatedUsers(currentData)}
+                />
             </div>
         </div>
     )
